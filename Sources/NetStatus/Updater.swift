@@ -60,21 +60,21 @@ final class Updater {
 
         let fetch = await Self.shell("git fetch --quiet origin", in: sourceDir)
         guard fetch.status == 0 else {
-            if userInitiated { showAlert("Não foi possível verificar atualizações.", details: fetch.output) }
+            if userInitiated { showAlert("Couldn't check for updates.", details: fetch.output) }
             return
         }
         let remote = await Self.shell("git rev-parse --short @{u}", in: sourceDir).output
         guard remote != Self.currentCommit,
               await Self.shell("git merge-base --is-ancestor \(Self.currentCommit) @{u}", in: sourceDir).status == 0
         else {
-            if userInitiated { showAlert("NetStatus já está atualizado.", details: "Versão \(Self.currentCommit)") }
+            if userInitiated { showAlert("NetStatus is up to date.", details: "Version \(Self.currentCommit)") }
             return
         }
         guard userInitiated || remote != failedCommit else { return }
         // Uncommitted changes mean someone is working in this clone: don't build their half-done code.
         guard await Self.shell("git status --porcelain --untracked-files=no", in: sourceDir).output.isEmpty else {
             if userInitiated {
-                showAlert("NetStatus não pode atualizar agora.", details: "\(sourceDir) tem alterações não commitadas.")
+                showAlert("NetStatus can't update right now.", details: "\(sourceDir) has uncommitted changes.")
             }
             return
         }
@@ -85,7 +85,7 @@ final class Updater {
         )
         if build.status != 0 {
             failedCommit = remote
-            if userInitiated { showAlert("Não foi possível atualizar o NetStatus.", details: Self.logTail(or: build.output)) }
+            if userInitiated { showAlert("NetStatus couldn't be updated.", details: Self.logTail(or: build.output)) }
         }
     }
 
@@ -97,25 +97,25 @@ final class Updater {
             guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
             let latest = String(try JSONDecoder().decode(Release.self, from: data).tag_name.trimmingPrefix("v"))
             guard latest.compare(Self.currentVersion, options: .numeric) == .orderedDescending else {
-                showAlert("NetStatus já está atualizado.", details: "Versão \(Self.currentVersion)")
+                showAlert("NetStatus is up to date.", details: "Version \(Self.currentVersion)")
                 return
             }
             let alert = NSAlert()
-            alert.messageText = "NetStatus \(latest) disponível."
+            alert.messageText = "NetStatus \(latest) is available."
             alert.informativeText = """
-            Você está na versão \(Self.currentVersion).
+            You have version \(Self.currentVersion).
 
-            Instalado pelo Homebrew: rode "brew upgrade --cask netstatus".
-            Senão, baixe o instalador na página da release.
+            Installed via Homebrew: run "brew upgrade --cask netstatus".
+            Otherwise, download the installer from the release page.
             """
-            alert.addButton(withTitle: "Abrir página")
-            alert.addButton(withTitle: "Depois")
+            alert.addButton(withTitle: "Open page")
+            alert.addButton(withTitle: "Later")
             NSApp.activate(ignoringOtherApps: true)
             if alert.runModal() == .alertFirstButtonReturn {
                 NSWorkspace.shared.open(Self.releasePageURL)
             }
         } catch {
-            showAlert("Não foi possível verificar atualizações.", details: error.localizedDescription)
+            showAlert("Couldn't check for updates.", details: error.localizedDescription)
         }
     }
 

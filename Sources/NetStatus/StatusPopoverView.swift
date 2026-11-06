@@ -15,13 +15,13 @@ struct StatusPopoverView: View {
             historySection
             Divider()
 
-            Button("Verificar agora") { monitor.checkNow() }
+            Button("Check now") { monitor.checkNow() }
                 .buttonStyle(.bordered)
                 .frame(maxWidth: .infinity)
 
             VStack(alignment: .leading, spacing: 10) {
-                Toggle("Notificar queda e reconexão", isOn: $notifyEnabled)
-                Toggle("Iniciar com o Mac", isOn: $launchAtLogin)
+                Toggle("Notify on drop and reconnect", isOn: $notifyEnabled)
+                Toggle("Open at Login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, newValue in setLaunchAtLogin(newValue) }
             }
             .toggleStyle(.switch)
@@ -30,16 +30,16 @@ struct StatusPopoverView: View {
             Divider()
 
             HStack {
-                Text("Versão \(Updater.currentVersion)")
+                Text("Version \(Updater.currentVersion)")
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                 Spacer()
-                Button("Verificar atualizações") { updater.checkNow() }
+                Button("Check for Updates…") { updater.checkNow() }
                     .buttonStyle(.link)
                     .font(.system(size: 11))
             }
 
-            Button("Sair") { NSApp.terminate(nil) }
+            Button("Quit") { NSApp.terminate(nil) }
                 .buttonStyle(.link)
                 .font(.system(size: 12))
                 .foregroundStyle(.secondary)
@@ -62,7 +62,7 @@ struct StatusPopoverView: View {
 
     private var historySection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("ÚLTIMOS 5 MINUTOS")
+            Text("LAST 5 MINUTES")
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(.secondary)
             Sparkline(samples: monitor.history, color: StatusIcon.color(for: monitor.status))
@@ -76,29 +76,29 @@ struct StatusPopoverView: View {
     private var title: String {
         switch monitor.status {
         case .online: return "Internet OK"
-        case .slow: return "Conexão instável"
-        case .offline: return "Sem internet"
-        case .checking: return "Verificando…"
+        case .slow: return "Unstable connection"
+        case .offline: return "No internet"
+        case .checking: return "Checking…"
         }
     }
 
     private var subtitle: String {
         switch monitor.status {
         case .online, .slow:
-            guard let ms = monitor.latencyMs else { return "Testando conexão" }
-            return "Latência: \(Int(ms))ms"
+            guard let ms = monitor.latencyMs else { return "Checking connection" }
+            return "Latency: \(Int(ms))ms"
         case .offline:
-            return "Sem resposta do servidor de teste"
+            return "No response from the test server"
         case .checking:
-            return "Testando conexão agora"
+            return "Checking connection now"
         }
     }
 
     private var lastCheckText: String {
-        guard let date = monitor.lastCheck else { return "Última verificação: —" }
+        guard let date = monitor.lastCheck else { return "Last checked: —" }
         let formatter = RelativeDateTimeFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        return "Última verificação: " + formatter.localizedString(for: date, relativeTo: Date())
+        formatter.locale = Locale(identifier: "en_US")
+        return "Last checked: " + formatter.localizedString(for: date, relativeTo: Date())
     }
 
     private func setLaunchAtLogin(_ enabled: Bool) {

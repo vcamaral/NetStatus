@@ -41,11 +41,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func setUpPopover() {
+        let hosting = NSHostingController(rootView: StatusPopoverView(monitor: monitor, updater: updater))
+        hosting.sizingOptions = [.preferredContentSize]
         popover = NSPopover()
         popover.behavior = .transient
-        popover.contentViewController = NSHostingController(
-            rootView: StatusPopoverView(monitor: monitor, updater: updater)
-        )
+        popover.contentViewController = hosting
     }
 
     @objc private func togglePopover() {
@@ -54,8 +54,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             popover.performClose(nil)
         } else {
             NSApp.activate(ignoringOtherApps: true)
-            // A few extra points of gap so the popover clears the menu bar instead of touching it.
-            popover.show(relativeTo: button.bounds.insetBy(dx: 0, dy: -6), of: button, preferredEdge: .minY)
+            // Extra gap so the popover clears the menu bar with visible space, instead of touching it.
+            popover.show(relativeTo: button.bounds.insetBy(dx: 0, dy: -14), of: button, preferredEdge: .minY)
         }
     }
 
@@ -88,8 +88,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard wasDown != isDown else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = isDown ? "Sem internet" : "Internet voltou"
-        content.body = isDown ? "A conexão caiu." : "A conexão foi restabelecida."
+        content.title = isDown ? "No internet" : "Internet's back"
+        content.body = isDown ? "Your connection dropped." : "Your connection was restored."
         content.sound = .default
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)

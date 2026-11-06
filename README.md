@@ -4,8 +4,8 @@ A menu bar app for macOS that tells you, at a glance, whether your internet is w
 
 A plain colored dot replaces the usual Wi-Fi icon so the two are never confused: green means
 everything's fine, orange means the connection is slow or flaky, red means it's down, and gray
-pulsing means it's checking right now. Click it for latency, a short history and a notification
-toggle for drops and reconnects.
+pulsing means it's checking right now. Click it for latency and a short history; you also get a
+notification the moment the connection drops or comes back, no setup needed.
 
 ## Install
 

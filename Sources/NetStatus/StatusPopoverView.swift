@@ -1,12 +1,8 @@
-import ServiceManagement
 import SwiftUI
 
 struct StatusPopoverView: View {
     @ObservedObject var monitor: NetworkMonitor
     let updater: Updater
-
-    @AppStorage("notifyEnabled") private var notifyEnabled = true
-    @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -19,14 +15,6 @@ struct StatusPopoverView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.regular)
                 .frame(maxWidth: .infinity)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Toggle("Notify on Drop and Reconnect", isOn: $notifyEnabled)
-                Toggle("Open at Login", isOn: $launchAtLogin)
-                    .onChange(of: launchAtLogin) { _, newValue in setLaunchAtLogin(newValue) }
-            }
-            .toggleStyle(.switch)
-            .font(.system(size: 13))
 
             Divider()
 
@@ -101,18 +89,6 @@ struct StatusPopoverView: View {
         let formatter = RelativeDateTimeFormatter()
         formatter.locale = Locale(identifier: "en_US")
         return "Last checked: " + formatter.localizedString(for: date, relativeTo: Date())
-    }
-
-    private func setLaunchAtLogin(_ enabled: Bool) {
-        do {
-            if enabled {
-                try SMAppService.mainApp.register()
-            } else {
-                try SMAppService.mainApp.unregister()
-            }
-        } catch {
-            launchAtLogin = SMAppService.mainApp.status == .enabled
-        }
     }
 }
 

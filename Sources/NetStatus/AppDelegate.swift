@@ -82,7 +82,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func notifyIfNeeded(previous: ConnectionStatus, new: ConnectionStatus) {
-        guard UserDefaults.standard.object(forKey: "notifyEnabled") as? Bool ?? true else { return }
         let wasDown = previous == .offline
         let isDown = new == .offline
         guard wasDown != isDown else { return }
@@ -97,7 +96,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - First run
 
-    /// Turns on "Open at Login" once; if the user turns it off later (in the popover), it stays off.
+    /// Turns on "Open at Login" once. There's no in-app toggle for it: the system already has one,
+    /// in System Settings > General > Login Items, and that's where turning it off sticks.
     private func enableLaunchAtLoginOnFirstRun() {
         let key = "didEnableLaunchAtLogin"
         guard !UserDefaults.standard.bool(forKey: key) else { return }

@@ -9,18 +9,19 @@ struct StatusPopoverView: View {
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             header
             Divider()
             historySection
             Divider()
 
-            Button("Check now") { monitor.checkNow() }
+            Button("Check Now") { monitor.checkNow() }
                 .buttonStyle(.bordered)
+                .controlSize(.regular)
                 .frame(maxWidth: .infinity)
 
-            VStack(alignment: .leading, spacing: 10) {
-                Toggle("Notify on drop and reconnect", isOn: $notifyEnabled)
+            VStack(alignment: .leading, spacing: 8) {
+                Toggle("Notify on Drop and Reconnect", isOn: $notifyEnabled)
                 Toggle("Open at Login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, newValue in setLaunchAtLogin(newValue) }
             }
@@ -31,31 +32,32 @@ struct StatusPopoverView: View {
 
             HStack {
                 Text("Version \(Updater.currentVersion)")
-                    .font(.system(size: 11))
+                    .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
                 Button("Check for Updates…") { updater.checkNow() }
                     .buttonStyle(.link)
-                    .font(.system(size: 11))
+                    .font(.caption)
             }
 
-            Button("Quit") { NSApp.terminate(nil) }
+            Button("Quit NetStatus") { NSApp.terminate(nil) }
                 .buttonStyle(.link)
-                .font(.system(size: 12))
+                .font(.callout)
                 .foregroundStyle(.secondary)
         }
         .padding(16)
         .frame(width: 280)
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 
     private var header: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             Circle()
                 .fill(Color(nsColor: StatusIcon.color(for: monitor.status)))
-                .frame(width: 16, height: 16)
+                .frame(width: 14, height: 14)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 14, weight: .semibold))
-                Text(subtitle).font(.system(size: 12)).foregroundStyle(.secondary)
+                Text(title).font(.headline)
+                Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
             }
         }
     }
@@ -63,12 +65,12 @@ struct StatusPopoverView: View {
     private var historySection: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("LAST 5 MINUTES")
-                .font(.system(size: 10, weight: .semibold))
+                .font(.caption2.weight(.semibold))
                 .foregroundStyle(.secondary)
             Sparkline(samples: monitor.history, color: StatusIcon.color(for: monitor.status))
                 .frame(height: 32)
             Text(lastCheckText)
-                .font(.system(size: 11))
+                .font(.caption)
                 .foregroundStyle(.secondary)
         }
     }

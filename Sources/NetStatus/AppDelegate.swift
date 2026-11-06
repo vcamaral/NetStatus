@@ -54,7 +54,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             popover.performClose(nil)
         } else {
             NSApp.activate(ignoringOtherApps: true)
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+            // A few extra points of gap so the popover clears the menu bar instead of touching it.
+            popover.show(relativeTo: button.bounds.insetBy(dx: 0, dy: -6), of: button, preferredEdge: .minY)
         }
     }
 

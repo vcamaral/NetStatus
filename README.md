@@ -1,4 +1,4 @@
-# NetStatus
+<h1><img src="assets/icon.png" width="64" height="64" align="absmiddle" alt=""> NetStatus</h1>
 
 A menu bar app for macOS that tells you, at a glance, whether your internet is working.
 

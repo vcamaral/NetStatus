@@ -7,7 +7,7 @@ import AppKit
 /// Releases instead, only when asked, so NetStatus never goes online on its own in that case.
 @MainActor
 final class Updater {
-    private static let checkInterval: TimeInterval = 2 * 60 * 60
+    private static let checkInterval: TimeInterval = 24 * 60 * 60
     private static let firstCheckDelay: TimeInterval = 60
     static let logURL = FileManager.default.homeDirectoryForCurrentUser
         .appendingPathComponent("Library/Logs/NetStatus-update.log")

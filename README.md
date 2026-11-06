@@ -46,7 +46,7 @@ and the only network traffic NetStatus generates is this probe plus, optionally,
 
 ## Updates
 
-A build from a clone updates itself: it checks the git remote every couple of hours, and when
+A build from a clone updates itself: it checks the git remote once a day, and when
 there are new commits with no local changes in the way, it pulls, rebuilds and restarts in the
 background — no prompt. It skips updating while the clone has uncommitted changes. Keep the clone
 where you installed from; the log of the last update is in `~/Library/Logs/NetStatus-update.log`.
